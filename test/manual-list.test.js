@@ -167,8 +167,8 @@ describe('List aggregator (for a manual list)', function () {
           should.not.exist(err)
           results.should.have.length(5)
           results.forEach(function (result, i) {
-            eql(_.extend({}, articleFixtures.minimalNewPublishedModel, { _id: articles[i].articleId }), result,
-              false, true)
+            eql(_.extend({}, articleFixtures.minimalNewPublishedModel, { _id: articles[i].articleId, section: null }),
+              result, false, true)
           })
           done()
         })
@@ -210,8 +210,8 @@ describe('List aggregator (for a manual list)', function () {
           should.not.exist(err)
           results.should.have.length(3)
           results.forEach(function (result, i) {
-            eql(_.extend({}, articleFixtures.minimalNewPublishedModel, { _id: articles[i].articleId }), result,
-              false, true)
+            eql(_.extend({}, articleFixtures.minimalNewPublishedModel, { _id: articles[i].articleId, section: null }),
+              result, false, true)
           })
           done()
         })
@@ -254,7 +254,7 @@ describe('List aggregator (for a manual list)', function () {
           should.not.exist(err)
           results.should.have.length(2)
           results.forEach(function (result, i) {
-            eql(_.extend({}, articleFixtures.minimalNewPublishedModel, { _id: articles[i].articleId }),
+            eql(_.extend({}, articleFixtures.minimalNewPublishedModel, { _id: articles[i].articleId, section: null }),
               result, false, true)
           })
           done()
@@ -311,7 +311,8 @@ describe('List aggregator (for a manual list)', function () {
           should.not.exist(err)
           results.should.have.length(3)
           results.forEach(function (result, i) {
-            eql(_.extend({}, articleFixtures.minimalNewPublishedModel, articles[i]), result, false, true)
+            eql(_.extend({}, articleFixtures.minimalNewPublishedModel, articles[i], { section: null }),
+              result, false, true)
           })
           done()
         })

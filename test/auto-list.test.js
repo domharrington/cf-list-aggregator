@@ -86,7 +86,7 @@ describe('List aggregator (for an auto list)', function () {
             eql(_.extend(
                   {}
                 , articleFixtures.minimalNewPublishedModel
-                , { _id: articles[i].articleId, tags: articles[i].tags })
+                , { _id: articles[i].articleId, tags: articles[i].tags, section: null })
               , result, false, true)
           })
           done()
@@ -134,7 +134,7 @@ describe('List aggregator (for an auto list)', function () {
             eql(_.extend(
                   {}
                 , articleFixtures.minimalNewPublishedModel
-                , { _id: articles[i].articleId })
+                , { _id: articles[i].articleId, section: null })
               , result, false, true)
           })
           done()
@@ -181,7 +181,7 @@ describe('List aggregator (for an auto list)', function () {
             eql(_.extend(
                   {}
                 , articleFixtures.minimalNewPublishedModel
-                , { _id: articles[i].articleId })
+                , { _id: articles[i].articleId, section: null })
               , result, false, true)
           })
           done()
@@ -229,7 +229,7 @@ describe('List aggregator (for an auto list)', function () {
             eql(_.extend(
                   {}
                 , articleFixtures.minimalNewPublishedModel
-                , { _id: articles[i].articleId })
+                , { _id: articles[i].articleId, section: null })
               , result, false, true)
           })
           done()
@@ -279,6 +279,7 @@ describe('List aggregator (for an auto list)', function () {
                 , articleFixtures.minimalNewPublishedModel
                 , { _id: articles[articles.length - i - 1].articleId
                   , displayDate: articles[articles.length - i - 1].displayDate
+                  , section: null
                   })
               , result, false, true)
           })
@@ -329,6 +330,7 @@ describe('List aggregator (for an auto list)', function () {
                 , articleFixtures.minimalNewPublishedModel
                 , { _id: articles[articles.length - i - 1].articleId
                   , shortTitle: articles[articles.length - i - 1].shortTitle
+                  , section: null
                   })
               , result, false, true)
           })
