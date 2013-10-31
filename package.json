@@ -28,7 +28,7 @@
     "mocha": "~1",
     "should": "~2",
     "pliers": "~0",
-    "fleet-street": "git+ssh://git@github.com:clocklimited/fleet-street.git",
+    "fleet-street": "git+ssh://git@github.com:domharrington/fleet-street.git#ddbb82c136604659015f08b13df4e720ccf4b6a2",
     "service-locator": "*",
     "doorman": "0.0.2",
     "moment": "~2.2.1",

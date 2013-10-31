@@ -14,6 +14,7 @@ var createAggregator = require('..')
   , logger = require('./null-logger')
   , createListService = require('./mock-list-service')
   , dbConnect = require('./lib/db-connection')
+  , serviceLocator
   , createArticleService
   , createSectionService
   , section
@@ -23,8 +24,10 @@ var createAggregator = require('..')
 before(function(done) {
   dbConnect.connect(function (err, db) {
     dbConnection = db
+    serviceLocator = require('./mock-service-locator')(db)
 
     createSectionService = require('./mock-section-service')(saveMongodb(dbConnection.collection('section')))
+    createArticleService = serviceLocator.createArticleService
 
     sectionService = createSectionService()
     sectionService.create(sectionFixtures.newVaildModel, function (err, newSection) {
@@ -36,12 +39,6 @@ before(function(done) {
 
 // Clean up after tests
 after(dbConnect.disconnect)
-
-// Each test gets a new article service
-beforeEach(function() {
-  createArticleService = require('./mock-article-service')
-  (saveMongodb(dbConnection.collection('article' + Date.now())))
-})
 
 describe('List aggregator (for a manual list)', function () {
 
@@ -320,7 +317,53 @@ describe('List aggregator (for a manual list)', function () {
         })
 
       })
+  })
 
+  it('should returns fields from #find() and not just #read()', function (done) {
+    var articles = []
+      , overrides
+      , listId
+      , listService = createListService()
+      , sectionService = createSectionService()
+      , articleService = createArticleService()
+
+    async.waterfall(
+      [ async.apply(serviceLocator.sectionService.create,
+          { name: 'Section A', visible: true, slug: 'sectiona' })
+      , function (section, next) {
+          publishedArticleMaker(articleService, articles, { section: section._id })(function () {
+            overrides = [{ longTitle: 'Override #1', customId: null }]
+            next()
+          })
+        }
+      , function (cb) {
+        listService.create(
+            { type: 'manual'
+            , name: 'test list'
+            , articles: articles.map(function (article, i) {
+                return _.extend({}, article, overrides[i])
+              })
+            , limit: 100
+            }
+            , function (err, res) {
+                listId = res._id
+                cb(null)
+              })
+      }
+      ], function (err) {
+        if (err) throw err
+
+        var aggregate = createAggregator(listService, sectionService, articleService, { logger: logger })
+
+        aggregate(listId, null, null, section, function (err, results) {
+          should.not.exist(err)
+          results.should.have.length(1)
+          should.exist(results[0].__fullUrlPath)
+          should.exist(results[0].__breadcrumb)
+          should.exist(results[0].__liteSection)
+          done()
+        })
+      })
   })
 
   it('should override the live and expiry date of a non live article', function (done) {
