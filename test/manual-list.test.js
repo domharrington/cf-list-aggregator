@@ -14,7 +14,6 @@ var createAggregator = require('..')
   , logger = require('./null-logger')
   , createListService = require('./mock-list-service')
   , dbConnect = require('./lib/db-connection')
-  , serviceLocator
   , createArticleService
   , createSectionService
   , section
@@ -24,10 +23,8 @@ var createAggregator = require('..')
 before(function(done) {
   dbConnect.connect(function (err, db) {
     dbConnection = db
-    serviceLocator = require('./mock-service-locator')(db)
 
     createSectionService = require('./mock-section-service')(saveMongodb(dbConnection.collection('section')))
-    createArticleService = serviceLocator.createArticleService
 
     sectionService = createSectionService()
     sectionService.create(sectionFixtures.newVaildModel, function (err, newSection) {
@@ -39,6 +36,12 @@ before(function(done) {
 
 // Clean up after tests
 after(dbConnect.disconnect)
+
+// Each test gets a new article service
+beforeEach(function() {
+  createArticleService = require('./mock-article-service')
+  (saveMongodb(dbConnection.collection('article' + Date.now())))
+})
 
 describe('List aggregator (for a manual list)', function () {
 

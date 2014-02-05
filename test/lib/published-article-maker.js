@@ -11,6 +11,7 @@ module.exports.createArticles = function (i, articleService, articles, custom) {
 }
 
 function publishedArticleMaker(articleService, articles, custom) {
+  var slugUniquer = 1
 
   return function (n, cb) {
     if (!cb) cb = n
@@ -18,7 +19,8 @@ function publishedArticleMaker(articleService, articles, custom) {
     var model = _.extend({}, articleFixtures.validNewPublishedModel, custom)
 
     // Make slug unique to stop validation errors (slug and section unique)
-    model.slug = Math.round(Math.random() * 100000000000).toString(36)
+    model.slug += slugUniquer
+    slugUniquer++
 
     articleService.create(model, function (err, result) {
       if (err) return cb(err)
